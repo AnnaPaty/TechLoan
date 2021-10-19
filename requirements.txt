@@ -5,4 +5,4 @@ time
 umap-learn
 matplotlib 
 sklearn
-pyplot 
+matplotlib  
