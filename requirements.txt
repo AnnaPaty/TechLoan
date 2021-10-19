@@ -1,6 +1,8 @@
-# local package
--e .
-
 # external requirements
 numpy
 pandas
+time
+umap-learn
+matplotlib 
+sklearn
+pyplot 
