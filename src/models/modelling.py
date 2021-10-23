@@ -118,90 +118,10 @@ def hieragglo(data, transform=None, linkage="ward", criteria=None, parameter=Non
         return clusters
     return None
 
-##############################################################
-###### Ficar les línies per guardar la projecció UMAP ########
-############# i el model pel cluster jerarquic ###############
-#################### Treure tota la resta ####################
-##############################################################
+if __name__=="__main__":
+    embedded = umap.UMAP().fit_transform(data)
+    ## Best clusters for k=3 and k=4 ## 
+    c3 = hieragglo(embedded, transform=None, linkage="complete", criteria="n_clusters", parameter=3, dendro=False)
+    c4 = clusters = sklc.KMeans(n_clusters=3).fit_predict(embedded)
+    
 
-## Hierarchical agglomerative clustering ##
-transformed_data = umap.UMAP().fit_transform(data)
-
-# linkage ward
-_ = hieragglo(transformed_data, linkage="ward", dendro=True)
-
-# linkage complete
-_ = hieragglo(transformed_data, linkage="complete", dendro=True)
-
-# linkage average
-_ = hieragglo(transformed_data, linkage="average", dendro=True)
-
-# linkage single
-_ = hieragglo(transformed_data, linkage="single", dendro=True)
-
-embedded = umap.UMAP().fit_transform(data)
-clusters = hieragglo(embedded, transform=None, linkage="complete", criteria="height", parameter=12, dendro=True)
-plot_data(embedded, transform=None, clusters=clusters)
-
-embedded = umap.UMAP().fit_transform(data)
-clusters = hieragglo(embedded, transform=None, linkage="complete", criteria="height", parameter=8.5, dendro=True)
-plot_data(embedded, transform=None, clusters=clusters)
-
-## K Means ##
-embedded = umap.UMAP().fit_transform(data)
-
-label = sklc.KMeans(n_clusters=8).fit_predict(embedded)
-plot_data(embedded, transform=None, clusters=label)
-
-"""# Create clusters"""
-
-# Always use UMAP transform
-embedded = umap.UMAP().fit_transform(data)
-
-(1234)
-results = {}
-for method in ["Hierarchical", "K-Means"]:
-    for nclust in [2,3,4]:
-        if method == "Hierarchical":
-            for linkage in ["complete", "average", "ward", "single"]:
-                clusters = hieragglo(embedded, transform=None, linkage=linkage, criteria="n_clusters", parameter=nclust, dendro=False)
-                pseudoF = calinski_harabasz_score(embedded, labels=clusters)
-                resstr = f"{method} ({linkage} linkage), K={nclust}"
-                plot_data(embedded, transform=None, clusters=clusters, title=resstr + f"; Pseudo-F Statistic = {pseudoF}")
-                results[resstr] = pseudoF
-        elif method == "K-Means":
-                clusters = sklc.KMeans(n_clusters=nclust, random_state=1234).fit_predict(embedded)
-                pseudoF = calinski_harabasz_score(embedded, labels=clusters)
-                resstr = f"{method}, K={nclust}"
-                plot_data(embedded, transform=None, clusters=clusters, title=resstr + f"; Pseudo-F Statistic = {pseudoF}")
-                results[resstr] = pseudoF
-
-results_sorted = sorted(results.items(), key=lambda t: -t[1])
-plt.plot([n for _,n in results_sorted])
-for resstr, n in results_sorted:
-    print(resstr + " "*max(2, 40-len(resstr)) + str(n))
-
-## Best clusters for k=3 and k=4 ## 
-c3 = hieragglo(embedded, transform=None, linkage="complete", criteria="n_clusters", parameter=3, dendro=False)
-c4 = clusters = sklc.KMeans(n_clusters=nclust).fit_predict(embedded)
-
-groups_c3 = [data[c3 == i] for i in np.unique(c3)]
-groups_c4 = [data[c4 == i] for i in np.unique(c4)]
-
-for var in data.columns:
-    plt.figure(figsize=(8,6))
-    plt.hist(groups_c3[0][var], bins=30, density=True, alpha=0.5, label=f"Cluster #{0}")
-    plt.hist(groups_c3[1][var], bins=30, density=True, alpha=0.5, label=f"Cluster #{1}")
-    plt.hist(groups_c3[2][var], bins=30, density=True, alpha=0.5, label=f"Cluster #{2}")
-    plt.title(f"C3, var={var}")
-    plt.legend()
-    plt.show()
-
-var = "PROJECT_ID"
-clust_num = 0
-
-# descr_group = groups_c3[2].describe()[var]["mean"]
-# descr_data  = data.describe()[var]["mean"]
-
-plt.scatter(groups_c3[0]["INDUCED_ISSUES"], groups_c3[0]["COMMIT_HASH"])
-plt.show()
