@@ -15,6 +15,8 @@ from sklearn.metrics import calinski_harabasz_score  # A.K.A Pseudo-F Statistic
 # Visualization
 from matplotlib import pyplot as plt
 
+# Save model
+import pickle
 
 df = pd.read_csv("../../data/processed/committer-level_dataframe.csv")
 
@@ -122,6 +124,9 @@ if __name__=="__main__":
     embedded = umap.UMAP().fit_transform(data)
     ## Best clusters for k=3 and k=4 ## 
     c3 = hieragglo(embedded, transform=None, linkage="complete", criteria="n_clusters", parameter=3, dendro=False)
-    c4 = clusters = sklc.KMeans(n_clusters=3).fit_predict(embedded)
+    c4 = sklc.KMeans(n_clusters=3).fit_predict(embedded)
     
+    # Save models
+    pickle.dump(c3, open('./../../models/hieragglo.sav'))
+    pickle.dump(c3, open('./../../models/kmeans.sav'))
 
