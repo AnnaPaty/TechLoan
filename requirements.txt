@@ -1,8 +1,6 @@
 # external requirements
-numpy
-pandas
-time
-umap-learn
-matplotlib 
-sklearn
-matplotlib  
+numpy==1.19.5
+pandas==1.1.5
+umap-learn==0.5.1
+matplotlib==3.2.2
+sklearn==0.22.2.post1
