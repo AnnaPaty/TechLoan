@@ -3,4 +3,3 @@ numpy==1.19.5
 pandas
 umap-learn==0.5.1
 matplotlib
-sklearn
