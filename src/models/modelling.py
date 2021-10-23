@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 
 # Decomposition
-# !pip install umap-learn
 import umap
 import sklearn.decomposition as skld
 import sklearn.manifold as sklm
@@ -18,7 +17,10 @@ from matplotlib import pyplot as plt
 # Save model
 import joblib
 
-df = pd.read_csv("../../data/processed/committer-level_dataframe.csv")
+# Find the data
+import os
+comitter_data_csv = os.getcwd().split("TechLoan")[0]+"TechLoan/data/processed/committer-level_dataframe.csv"
+df = pd.read_csv(comitter_data_csv)
 
 # Data used by the clustering methods should not include the names of the committers
 data = df.loc[:, df.columns != 'COMMITTER']
