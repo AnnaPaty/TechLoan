@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import time
 
 # Decomposition
 import umap
@@ -19,8 +20,8 @@ import joblib
 
 # Find the data
 import os
-comitter_data_csv = os.getcwd().split("TechLoan")[0]+"TechLoan/data/processed/committer-level_dataframe.csv"
-df = pd.read_csv(comitter_data_csv)
+committer_data_csv = os.getcwd().split("TechLoan")[0]+"TechLoan/data/processed/committer-level_dataframe.csv"
+df = pd.read_csv(committer_data_csv)
 
 # Data used by the clustering methods should not include the names of the committers
 data = df.loc[:, df.columns != 'COMMITTER']
@@ -123,19 +124,28 @@ def hieragglo(data, transform=None, linkage="ward", criteria=None, parameter=Non
     return None
 
 def save_model(model, filename):
-    path = '../../models/'+filename
+    path = os.getcwd().split("TechLoan")[0]+"TechLoan/models"+filename
     joblib.dump(model, path)
 
 
 if __name__=="__main__":
+    start = time.time()
+    print("Embedding data...", end=" ")
     embedder = umap.UMAP()
     embedded = embedder.fit_transform(data)
+    print(f"done ({round(time.time()-start, 2)} sec)")
     
     ## Best clusters for k=3 and k=4 ## 
+    start = time.time()
+    print("Clustering...", end=" ")
     c3 = hieragglo(embedded, transform=None, linkage="complete", criteria="n_clusters", parameter=3, dendro=False)
     c4 = sklc.KMeans(n_clusters=3).fit_predict(embedded)
+    print(f"done ({round(time.time()-start, 2)} sec)")
     
     # Save models
+    start = time.time()
+    print("Saving clusters...", end=" ")
     save_model(c3, 'hieragglo.sav')
     save_model(c4, 'kmeans.sav')
+    print(f"done ({round(time.time()-start, 2)} sec)")
 
