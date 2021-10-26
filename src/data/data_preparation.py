@@ -2,7 +2,10 @@ import numpy as np
 import pandas as pd
 import time
 
-datapath = "./Data/"
+# Find the data
+import os
+datapath = os.getcwd().split("TechLoan")[0]+"TechLoan/data/raw/"
+
 pipeline_start = time.time()
 
 ## Read tables from drive ##
