@@ -47,8 +47,23 @@ Below is an illustration that exemplifies the usage of this template in our proj
 
 Steps to reproduce the results
 --------
-
-
+1. Install requirements:
+````
+pip install -r requirements.txt
+````
+2. Execute data processing:
+````
+python src/data/data_preparation.py
+python src/features/commit_to_committer.py
+````
+3. Train and save the model:
+````
+python src/models/modelling.py
+````
+4. Generate balanced teams:
+````
+python src/models/auto_squading.py
+````
 --------
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
