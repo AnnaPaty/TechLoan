@@ -25,7 +25,7 @@ Project Organization
     │
     ├── requirements.txt   <- The requirements file for reproducing the analysis environment.
     │
-    ├── src                <- Source code for use in this project.
+    └── src                <- Source code for use in this project.
         ├── __init__.py    <- Makes src a Python module
         │
         ├── data           <- Scripts to download or generate data
@@ -45,6 +45,8 @@ Below is an illustration that exemplifies the usage of this template in our proj
 
 ![](https://github.com/AnnaPaty/TechLoan/blob/main/reports/figures/flow-diagram.png?raw=true)
 
+Steps to reproduce the results
+--------
 
 --------
 
