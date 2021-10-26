@@ -4,13 +4,13 @@ import time
 
 # Find the data
 import os
-datapath = os.getcwd().split("TechLoan")[0]+"TechLoan/data/interim/"
+root = os.getcwd().split("TechLoan")[0]+"TechLoan/data/"
 
 
 print("Starting aggregation commit to committer... ", end="")
 start = time.time()
 
-df = pd.read_csv(datapath+"commit-level_dataframe.csv")
+df = pd.read_csv(root+"interim/commit-level_dataframe.csv")
 df_project = df.pivot_table(values=['PROJECT_ID'],
                             index=['COMMITTER'],
                             aggfunc={'PROJECT_ID':lambda x: len(x.unique())})
@@ -23,6 +23,6 @@ df_mean = df.pivot_table(values=['AVG_LINES_ADDED','AVG_LINES_REMOVED','COUNT_SO
 df_committer = pd.merge(pd.merge(df_mean,df_commit_hash,on='COMMITTER'),df_project,on='COMMITTER')
 
 df_committer.reset_index(level=0, inplace=True)
-df_committer.to_csv("committer-level_dataframe.csv", index=False)
+df_committer.to_csv(root+"processed/committer-level_dataframe.csv", index=False)
 
 print(f"ended successfully ({round(time.time()-start, 2)} sec)")

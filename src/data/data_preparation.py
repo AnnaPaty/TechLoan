@@ -4,7 +4,8 @@ import time
 
 # Find the data
 import os
-datapath = os.getcwd().split("TechLoan")[0]+"TechLoan/data/raw/"
+root = os.getcwd().split("TechLoan")[0]+"TechLoan/data/"
+datapath = root+"raw/"
 
 pipeline_start = time.time()
 
@@ -208,6 +209,6 @@ print(f"done ({round(time.time()-start, 2)}s)")
 
 ## Save resulting dataframe as CSV ##
 print("Saving dataframe as CSV")
-df_comm.to_csv(datapath + "commit-level_dataframe.csv", index=False)
+df_comm.to_csv(root + "interim/commit-level_dataframe.csv", index=False)
 
 print(f"Data preparation automated pipeline finished successfully in {round(time.time()-pipeline_start, 2)} seconds.")
