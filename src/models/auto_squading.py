@@ -118,8 +118,9 @@ squad = proportional_autosquad(df, 5, ["senior","experienced","newbie"], bool_pr
 
 if bool_save:
     start = time.time()
-    print(f"Saving squads to {root+'squads/squads.csv'}...", end=" ")
-    f = open(root+'squads/squads.csv', 'w')
+    reportpath = os.getcwd().split("TechLoan")[0]+"TechLoan/reports/"
+    print(f"Saving squads to {reportpath+'squads.csv'}...", end=" ")
+    f = open(reportpath+'squads.csv', 'w')
     writer = csv.writer(f)
     writer.writerow(["squad","senior","experienced","newbie"])
     for id,s in enumerate(squad):
