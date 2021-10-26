@@ -48,6 +48,7 @@ Below is an illustration that exemplifies the usage of this template in our proj
 Steps to reproduce the results
 --------
 
+
 --------
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
