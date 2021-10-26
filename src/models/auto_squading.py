@@ -1,26 +1,17 @@
 import numpy as np
 import pandas as pd
-
-# Decomposition
-import umap
-import sklearn.decomposition as skld
-import sklearn.manifold as sklm
-
-# Clustering
-import sklearn.cluster as sklc
-import scipy.cluster.hierarchy as sch
-
-# Visualization
-from matplotlib import pyplot as plt
-
-# Save squads
-import pickle
+import time
 
 # Models
 import modelling as mod
 
+# Save squads
+import csv
 
-df = pd.read_csv("../../data/processed/committer-level_dataframe.csv")
+# Find the data
+import os
+root = os.getcwd().split("TechLoan")[0]+"TechLoan/data/"
+df = pd.read_csv(root+"processed/committer-level_dataframe.csv")
 
 
 def check_input(mode, prompt):
@@ -37,7 +28,7 @@ def check_input(mode, prompt):
 
     if mode == "y/n":
         str_yn  = input(prompt)
-        if str(str_yn) is str and str_yn in ["y", "n"]:
+        if type(str_yn) is str and str_yn in ["y", "n"]:
             return str_yn == "y"
         else:
             print("Type 'y' or 'n'.")
@@ -53,7 +44,7 @@ def read_input():
     
     # Read save option
     while True:
-        bool_save = check_input(mode="y/n", prompt="Do you want to save the squads to a file 'squads.txt' (y/n)? ")
+        bool_save = check_input(mode="y/n", prompt="Do you want to save the squads to a CSV file (y/n)? ")
         if bool_save is not None:
             break
 
@@ -74,7 +65,7 @@ clust2XP = ["senior", "experienced", "newbie"]
 devsXsquad, bool_save, bool_print = read_input()
 
 
-def parameter_error(df, devsXsquad):
+def parameter_error(df, devsXsquad, clust2XP):
     error = False
     if type(df) != pd.core.frame.DataFrame:
         print("ERROR: Parameter 'df' needs to be a pandas dataframe.")
@@ -99,12 +90,12 @@ def print_squads(squads):
                 print(" "*10 + dev)
 
 
-def proportional_autosquad(df, devsXsquad, clustToXP, print=False):
+def proportional_autosquad(df, devsXsquad, clustToXP, bool_print=False):
     if parameter_error(df, devsXsquad, clustToXP):
         return
     # Clusterize developers using the techniques we found to give the best results
     devs = np.array(df["COMMITTER"])
-    embedded = umap.UMAP().fit_transform(df.loc[:, df.columns != 'COMMITTER'])
+    embedded = mod.umap.UMAP().fit_transform(df.loc[:, df.columns != 'COMMITTER'])
     clust = mod.hieragglo(embedded, linkage="complete", criteria="n_clusters", parameter=3)
 
     # Form squads based on the proportion of each cluster so that squads are balanced
@@ -116,13 +107,25 @@ def proportional_autosquad(df, devsXsquad, clustToXP, print=False):
         squads.append({lvl:grouped_devs[lvl][i*prop[lvl]:(i+1)*prop[lvl]] for lvl in clust2XP})
 
     # Print the squads
-    if print:
+    if bool_print:
         print_squads(squads)
 
     return squads
 
 
-squad = proportional_autosquad(df, 5, ["senior","experienced","newbie"], print=bool_print)
+squad = proportional_autosquad(df, 5, ["senior","experienced","newbie"], bool_print=bool_print)
+
+
 if bool_save:
-    # falta implementar el save
-    ...
+    start = time.time()
+    print(f"Saving squads to {root+'squads/squads.csv'}...", end=" ")
+    f = open(root+'squads/squads.csv', 'w')
+    writer = csv.writer(f)
+    writer.writerow(["squad","senior","experienced","newbie"])
+    for id,s in enumerate(squad):
+        row = [id]
+        for cluster in s:
+            row.append(s[cluster])
+        writer.writerow(row)
+    f.close()
+    print(f"done ({round(time.time()-start, 2)} sec)")
